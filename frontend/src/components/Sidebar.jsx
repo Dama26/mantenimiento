@@ -1,11 +1,18 @@
 import React, { useState } from "react";
-import Logo from "../assets/logo.png"
+import Logo from "../assets/logo.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  FaAmbulance, FaMoneyBillWave, FaUsers, FaTools, FaCogs, FaSignOutAlt,
+  FaAmbulance,
+  FaMoneyBillWave,
+  FaUsers,
+  FaTools,
+  FaCogs,
+  FaSignOutAlt,
+  FaWrench, // ícono para mantenimientos
 } from "react-icons/fa";
 import {
-  TbLayoutSidebarLeftCollapse, TbLayoutSidebarLeftExpand,
+  TbLayoutSidebarLeftCollapse,
+  TbLayoutSidebarLeftExpand,
 } from "react-icons/tb";
 
 const Sidebar = () => {
@@ -16,6 +23,7 @@ const Sidebar = () => {
 
   const Menus = [
     { title: "Ambulancias", path: "/", icon: <FaAmbulance /> },
+    { title: "Mantenimientos", path: "/mantenimientos", icon: <FaWrench /> },
     { title: "Costos", path: "/costos", icon: <FaMoneyBillWave /> },
     { title: "Usuarios", path: "/usuarios", icon: <FaUsers /> },
     { title: "Piezas", path: "/piezas", icon: <FaTools /> },
@@ -38,14 +46,14 @@ const Sidebar = () => {
         </div>
 
         <div className="flex flex-col items-center justify-center">
-           <img
-               src={Logo}
-               alt="Ilustración"
-               className="object-cover w-100 h-100"
-            />
+          <img
+            src={Logo}
+            alt="Ilustración"
+            className="object-cover w-100 h-100"
+          />
         </div>
 
-        <ul className="space-y-2">
+        <ul className="space-y-2 mt-4">
           {Menus.map((menu, index) => (
             <li key={index}>
               <Link
@@ -64,7 +72,6 @@ const Sidebar = () => {
         </ul>
       </div>
 
-    
       <div className="mt-4">
         <button
           onClick={() => setShowLogoutModal(true)}
@@ -75,7 +82,6 @@ const Sidebar = () => {
         </button>
       </div>
 
-      
       {showLogoutModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-80">

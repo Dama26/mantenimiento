@@ -53,10 +53,10 @@ const Ambulancias = () => {
 
   return (
     <div className="p-6 space-y-12">
-      {/* Título principal */}
+    
       <h1 className="text-3xl font-bold text-red-700">Gestión de Ambulancias</h1>
 
-      {/* Sección: Formulario */}
+      
       <section className="bg-white p-6 rounded-lg shadow-lg max-w-xl mx-auto">
         <h2 className="text-2xl font-semibold text-red-700 mb-4">
           {modoEdicion ? "Editar Ambulancia" : "Registrar Nueva Ambulancia"}
@@ -105,10 +105,10 @@ const Ambulancias = () => {
         </form>
       </section>
 
-      {/* Línea divisora */}
+  
       <hr className="border-gray-300" />
 
-      {/* Sección: Tabla de ambulancias */}
+      
       <section>
         <h2 className="text-2xl font-semibold text-red-700 mb-4 text-center">Lista de Ambulancias</h2>
 

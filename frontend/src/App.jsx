@@ -7,6 +7,8 @@ import Costos from "./pages/Costos";
 import Usuarios from "./pages/Usuarios";
 import Piezas from "./pages/Piezas";
 import Reportes from "./pages/Reportes";
+import Mantenimientos from "./pages/Mantenimientos";
+
 
 const App = () => {
   return (
@@ -21,6 +23,8 @@ const App = () => {
           <Route path="/usuarios" element={<Usuarios />} />
           <Route path="/piezas" element={<Piezas />} />
           <Route path="/reportes" element={<Reportes />} />
+          <Route path="/mantenimientos" element={<Mantenimientos />} />
+
         </Routes>
       </div>
     </div>
