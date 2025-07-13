@@ -62,7 +62,7 @@ const Mantenimientos = () => {
             type="text"
             value={ambulancia}
             onChange={(e) => setAmbulancia(e.target.value)}
-            placeholder="Ej. CR-01"
+            placeholder=""
             className="w-full border border-gray-300 p-2 rounded"
           />
         </div>
@@ -73,7 +73,7 @@ const Mantenimientos = () => {
             type="text"
             value={numeroEconomico}
             onChange={(e) => setNumeroEconomico(e.target.value)}
-            placeholder="Ej. 123"
+            placeholder=""
             className="w-full border border-gray-300 p-2 rounded"
           />
         </div>
@@ -105,7 +105,7 @@ const Mantenimientos = () => {
           <textarea
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
-            placeholder="Ej. Cambio de frenos delanteros"
+            placeholder=""
             className="w-full border border-gray-300 p-2 rounded"
           />
         </div>
@@ -140,7 +140,7 @@ const Mantenimientos = () => {
             step="0.01"
             value={costo}
             onChange={(e) => setCosto(e.target.value)}
-            placeholder="Ej. 2500.00"
+            placeholder=""
             className="w-full border border-gray-300 p-2 rounded"
           />
         </div>
