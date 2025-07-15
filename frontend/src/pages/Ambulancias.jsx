@@ -53,8 +53,10 @@ const Ambulancias = () => {
 
   return (
     <div className="p-6 space-y-12">
+    
       <h1 className="text-3xl font-bold text-red-700">Gestión de Ambulancias</h1>
 
+      
       <section className="bg-white p-6 rounded-lg shadow-lg max-w-xl mx-auto">
         <h2 className="text-2xl font-semibold text-red-700 mb-4">
           {modoEdicion ? "Editar Ambulancia" : "Registrar Nueva Ambulancia"}
@@ -103,8 +105,10 @@ const Ambulancias = () => {
         </form>
       </section>
 
+  
       <hr className="border-gray-300" />
 
+      
       <section>
         <h2 className="text-2xl font-semibold text-red-700 mb-4 text-center">Lista de Ambulancias</h2>
 
