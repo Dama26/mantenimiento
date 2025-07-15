@@ -42,7 +42,7 @@ const Login = () => {
             <span className="text-3xl"></span> Cruz roja
           </h1>
           <h2 className="text-xl text-black-700 mb-1 font-semibold">Iniciar Sesión</h2>
-          <p className="text-sm text-black-500 mb-4">Bienvenido de nuevo</p>
+          <p className="text-sm text-black-500 mb-4">Bienvenido de Nuevo</p>
           <form onSubmit={handleLogin} className="space-y-4">
             <input
               type="email"
@@ -71,7 +71,7 @@ const Login = () => {
                 Crear cuenta
               </a>
               <a href="/recuperar" className="text-black-700 hover:underline">
-                ¿Olvidaste tu contraseña?
+                ¿Olvidaste tu Contraseña?
               </a>
             </div>
           </form>
