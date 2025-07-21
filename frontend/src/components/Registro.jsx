@@ -4,23 +4,44 @@ import toast, { Toaster } from "react-hot-toast";
 import Cruz from "../assets/cruz.jpg";
 import Imagen from "../assets/imagen.jpg";
 
-const Login = () => {
+const Registro = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    const loadingToast = toast.loading("Iniciando sesión...");
-    setTimeout(() => {
+    const loadingToast = toast.loading("Creando cuenta...");
+
+    try {
+      const response = await fetch("http://localhost:3000/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const result = await response.json();
       toast.dismiss(loadingToast);
-      if (email === "admin@cruzroja.org" && password === "123456") {
-        toast.success(`¡Bienvenido ${email.split("@")[0]}!`, { position: "top-right" });
-        navigate("/"); // Va al panel ambulancias
+
+      if (!response.ok) {
+        toast.error(result.message || "Error al crear la cuenta", {
+          position: "top-right",
+        });
       } else {
-        toast.error("Correo o contraseña incorrectos.", { position: "top-right" });
+        toast.success("¡Cuenta creada exitosamente!", {
+          position: "top-right",
+        });
+        navigate("/login");
       }
-    }, 1000);
+    } catch (error) {
+      toast.dismiss(loadingToast);
+      toast.error("Error de conexión con el servidor", {
+        position: "top-right",
+      });
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -34,10 +55,10 @@ const Login = () => {
           <img src={Imagen} alt="Ilustración" className="object-cover w-full" />
         </div>
         <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
-          <h1 className="text-3xl font-bold text-black-600 mb-2">Cruz Roja</h1>
-          <h2 className="text-xl text-black-700 mb-1 font-semibold">Iniciar Sesión</h2>
-          <p className="text-sm text-black-500 mb-4">Bienvenido de nuevo</p>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <h1 className="text-3xl font-bold text-red-600 mb-2">Cruz Roja</h1>
+          <h2 className="text-xl text-black-700 mb-1 font-semibold">Crear Cuenta</h2>
+          <p className="text-sm text-black-500 mb-4">Registra tus datos de acceso</p>
+          <form onSubmit={handleRegister} className="space-y-4">
             <input
               type="email"
               placeholder="Correo electrónico"
@@ -58,11 +79,11 @@ const Login = () => {
               type="submit"
               className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg transition"
             >
-              Iniciar Sesión
+              Crear Cuenta
             </button>
             <div className="text-sm text-center mt-2">
-              <Link to="/registro" className="text-black-700 hover:underline">
-                ¿No tienes cuenta? Crear cuenta
+              <Link to="/login" className="text-black-700 hover:underline">
+                ¿Ya tienes una cuenta? Inicia sesión
               </Link>
             </div>
           </form>
@@ -72,4 +93,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Registro;

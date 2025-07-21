@@ -1,9 +1,9 @@
 import { useState } from "react";
 
 const Ambulancias = () => {
-  const [numeroEconomico, setNumeroEconomico] = useState("");
-  const [placas, setPlacas] = useState("");
-  const [modelo, setModelo] = useState("");
+  const [unidad, setUnidad] = useState("");
+  const [kilometraje, setKilometraje] = useState("");
+  const [marca, setMarca] = useState("");
   const [ambulancias, setAmbulancias] = useState([]);
   const [modoEdicion, setModoEdicion] = useState(false);
   const [ambulanciaEditandoId, setAmbulanciaEditandoId] = useState(null);
@@ -15,7 +15,7 @@ const Ambulancias = () => {
       setAmbulancias((prev) =>
         prev.map((amb) =>
           amb.id === ambulanciaEditandoId
-            ? { ...amb, numeroEconomico, placas, modelo }
+            ? { ...amb, unidad, kilometraje, marca }
             : amb
         )
       );
@@ -24,22 +24,22 @@ const Ambulancias = () => {
     } else {
       const nuevaAmbulancia = {
         id: Date.now(),
-        numeroEconomico,
-        placas,
-        modelo,
+        unidad,
+        kilometraje,
+        marca,
       };
       setAmbulancias([...ambulancias, nuevaAmbulancia]);
     }
 
-    setNumeroEconomico("");
-    setPlacas("");
-    setModelo("");
+    setUnidad("");
+    setKilometraje("");
+    setMarca("");
   };
 
   const handleEditar = (amb) => {
-    setNumeroEconomico(amb.numeroEconomico);
-    setPlacas(amb.placas);
-    setModelo(amb.modelo);
+    setUnidad(amb.unidad);
+    setKilometraje(amb.kilometraje);
+    setMarca(amb.marca);
     setModoEdicion(true);
     setAmbulanciaEditandoId(amb.id);
   };
@@ -53,10 +53,8 @@ const Ambulancias = () => {
 
   return (
     <div className="p-6 space-y-12">
-    
       <h1 className="text-3xl font-bold text-red-700">Gestión de Ambulancias</h1>
 
-      
       <section className="bg-white p-6 rounded-lg shadow-lg max-w-xl mx-auto">
         <h2 className="text-2xl font-semibold text-red-700 mb-4">
           {modoEdicion ? "Editar Ambulancia" : "Registrar Nueva Ambulancia"}
@@ -64,33 +62,33 @@ const Ambulancias = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-700 font-medium mb-1">Número Económico</label>
+            <label className="block text-gray-700 font-medium mb-1">Unidad</label>
             <input
               type="text"
-              value={numeroEconomico}
-              onChange={(e) => setNumeroEconomico(e.target.value)}
+              value={unidad}
+              onChange={(e) => setUnidad(e.target.value)}
               className="w-full border border-gray-300 rounded px-3 py-2"
               required
             />
           </div>
 
           <div>
-            <label className="block text-gray-700 font-medium mb-1">Placas</label>
+            <label className="block text-gray-700 font-medium mb-1">Kilometraje</label>
             <input
-              type="text"
-              value={placas}
-              onChange={(e) => setPlacas(e.target.value)}
+              type="number"
+              value={kilometraje}
+              onChange={(e) => setKilometraje(e.target.value)}
               className="w-full border border-gray-300 rounded px-3 py-2"
               required
             />
           </div>
 
           <div>
-            <label className="block text-gray-700 font-medium mb-1">Modelo</label>
+            <label className="block text-gray-700 font-medium mb-1">Marca</label>
             <input
               type="text"
-              value={modelo}
-              onChange={(e) => setModelo(e.target.value)}
+              value={marca}
+              onChange={(e) => setMarca(e.target.value)}
               className="w-full border border-gray-300 rounded px-3 py-2"
               required
             />
@@ -105,10 +103,8 @@ const Ambulancias = () => {
         </form>
       </section>
 
-  
       <hr className="border-gray-300" />
 
-      
       <section>
         <h2 className="text-2xl font-semibold text-red-700 mb-4 text-center">Lista de Ambulancias</h2>
 
@@ -120,19 +116,19 @@ const Ambulancias = () => {
               <thead>
                 <tr className="bg-red-100 text-red-800 text-left">
                   <th className="py-2 px-4 border-b">#</th>
-                  <th className="py-2 px-4 border-b">Número Económico</th>
-                  <th className="py-2 px-4 border-b">Placas</th>
-                  <th className="py-2 px-4 border-b">Modelo</th>
+                  <th className="py-2 px-4 border-b">Unidad</th>
+                  <th className="py-2 px-4 border-b">Kilometraje</th>
+                  <th className="py-2 px-4 border-b">Marca</th>
                   <th className="py-2 px-4 border-b">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {ambulancias.map((amb, index) => (
-                  <tr key={amb.id} className="hover:bg-blac-50">
+                  <tr key={amb.id} className="hover:bg-gray-50">
                     <td className="py-2 px-4 border-b">{index + 1}</td>
-                    <td className="py-2 px-4 border-b">{amb.numeroEconomico}</td>
-                    <td className="py-2 px-4 border-b">{amb.placas}</td>
-                    <td className="py-2 px-4 border-b">{amb.modelo}</td>
+                    <td className="py-2 px-4 border-b">{amb.unidad}</td>
+                    <td className="py-2 px-4 border-b">{amb.kilometraje}</td>
+                    <td className="py-2 px-4 border-b">{amb.marca}</td>
                     <td className="py-2 px-4 border-b space-x-2">
                       <button
                         onClick={() => handleEditar(amb)}

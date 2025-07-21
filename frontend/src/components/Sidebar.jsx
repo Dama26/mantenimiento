@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Logo from "../assets/logo.png";
+import Logo from "../assets/Cruz_Roja_Mexicana.jpg"; // Asegúrate de que esté en src/assets/
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FaAmbulance,
@@ -8,7 +8,7 @@ import {
   FaTools,
   FaCogs,
   FaSignOutAlt,
-  FaWrench, // ícono para mantenimientos
+  FaWrench,
 } from "react-icons/fa";
 import {
   TbLayoutSidebarLeftCollapse,
@@ -45,15 +45,15 @@ const Sidebar = () => {
           {open ? <TbLayoutSidebarLeftExpand /> : <TbLayoutSidebarLeftCollapse />}
         </div>
 
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center mt-2 mb-4">
           <img
             src={Logo}
-            alt="Ilustración"
-            className="object-cover w-100 h-100"
+            alt="Logo Cruz Roja Mexicana"
+            className="object-contain w-50 h-auto"
           />
         </div>
 
-        <ul className="space-y-2 mt-4">
+        <ul className="space-y-2">
           {Menus.map((menu, index) => (
             <li key={index}>
               <Link
@@ -61,7 +61,7 @@ const Sidebar = () => {
                 className={`flex items-center gap-x-4 px-4 py-3 rounded-md transition duration-200 ${
                   location.pathname === menu.path
                     ? "bg-red-100 text-red-700 font-semibold"
-                    : "text-black-700 hover:bg-red-50 hover:text-red-700"
+                    : "text-black hover:bg-red-50 hover:text-red-700"
                 }`}
               >
                 <span className="text-lg">{menu.icon}</span>
@@ -75,7 +75,7 @@ const Sidebar = () => {
       <div className="mt-4">
         <button
           onClick={() => setShowLogoutModal(true)}
-          className="w-full flex items-center gap-x-4 px-4 py-3 rounded-md text-black-700 hover:bg-red-50 hover:text-red-700 transition duration-200"
+          className="w-full flex items-center gap-x-4 px-4 py-3 rounded-md text-black hover:bg-red-50 hover:text-red-700 transition duration-200"
         >
           <FaSignOutAlt className="text-lg" />
           {open && <span>Cerrar sesión</span>}
@@ -85,8 +85,10 @@ const Sidebar = () => {
       {showLogoutModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-            <h2 className="text-lg font-semibold text-black-800 mb-4">¿Cerrar sesión?</h2>
-            <p className="text-sm text-black-600 mb-6">¿Estás seguro que deseas cerrar tu sesión?</p>
+            <h2 className="text-lg font-semibold text-black mb-4">¿Cerrar sesión?</h2>
+            <p className="text-sm text-gray-600 mb-6">
+              ¿Estás seguro que deseas cerrar tu sesión?
+            </p>
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowLogoutModal(false)}
@@ -109,3 +111,4 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
