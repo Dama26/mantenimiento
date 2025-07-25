@@ -47,16 +47,22 @@ const Reportes = () => {
       body: ambulancias.map(a => [a.id, a.numero_economico]),
     });
 
-    doc.text("Mantenimientos", 14, ambulanciasTable.finalY + 10);
+    // Verificar si finalY está disponible
+    const yAfterAmbulancias = ambulanciasTable.finalY || 56;
+
+    doc.text("Mantenimientos", 14, yAfterAmbulancias + 10);
     const mantenimientosTable = doc.autoTable({
-      startY: ambulanciasTable.finalY + 12,
+      startY: yAfterAmbulancias + 12,
       head: [["ID", "Tipo", "Fecha"]],
       body: mantenimientos.map(m => [m.id, m.tipo.toUpperCase(), m.fecha]),
     });
 
-    doc.text("Costos", 14, mantenimientosTable.finalY + 10);
+    // Verificar si finalY está disponible
+    const yAfterMantenimientos = mantenimientosTable.finalY || yAfterAmbulancias + 12;
+
+    doc.text("Costos", 14, yAfterMantenimientos + 10);
     doc.autoTable({
-      startY: mantenimientosTable.finalY + 12,
+      startY: yAfterMantenimientos + 12,
       head: [["ID", "Pieza", "Total"]],
       body: costos.map(c => [c.id, c.pieza, `$${c.total.toFixed(2)}`]),
     });
@@ -133,4 +139,3 @@ const Reportes = () => {
 };
 
 export default Reportes;
-

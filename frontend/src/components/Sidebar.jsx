@@ -24,9 +24,7 @@ const Sidebar = () => {
   const Menus = [
     { title: "Ambulancias", path: "/", icon: <FaAmbulance /> },
     { title: "Mantenimientos", path: "/mantenimientos", icon: <FaWrench /> },
-    { title: "Costos", path: "/costos", icon: <FaMoneyBillWave /> },
     { title: "Usuarios", path: "/usuarios", icon: <FaUsers /> },
-    { title: "Piezas", path: "/piezas", icon: <FaTools /> },
     { title: "Reportes", path: "/reportes", icon: <FaCogs /> },
   ];
 

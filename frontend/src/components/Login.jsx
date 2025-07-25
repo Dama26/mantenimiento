@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import Cruz from "../assets/cruz.jpg";
 import Imagen from "../assets/imagen.jpg";
+import { useAuth } from '../hooks/useAuth';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -11,8 +12,15 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    const { login, loading, error } = useAuth();
     const loadingToast = toast.loading("Iniciando sesión...");
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    
+    const success = await login(email, password);
+    if (success) {
+      navigate('/mantenimientos'); // Or your desired redirect path
+    }
+
     toast.dismiss(loadingToast);
 
     if (error) {
