@@ -3,9 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Login from "./components/Login";
 import Ambulancias from "./pages/Ambulancias.jsx";
-import Costos from "./pages/Costos";
 import Usuarios from "./pages/Usuarios";
-import Piezas from "./pages/Piezas";
 import Mantenimientos from "./pages/Mantenimientos";
 import ReportesMantenimientos from "./pages/ReportesMantenimientos.jsx";
 // import { useAuth } from "./hooks/useAuth";
@@ -24,9 +22,7 @@ const App = () => {
             {/* <Sidebar /> */}
             <Route element={<MainLayout />}>
               <Route path="/" element={<Ambulancias />} />
-              <Route path="/costos" element={<Costos />} />
               <Route path="/usuarios" element={<Usuarios />} />
-              <Route path="/piezas" element={<Piezas />} />
               <Route path="/reportes" element={<ReportesMantenimientos />} />
               <Route path="/mantenimientos" element={<Mantenimientos />} />
             </Route>

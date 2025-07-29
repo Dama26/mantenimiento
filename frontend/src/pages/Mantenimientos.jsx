@@ -29,6 +29,22 @@ const Mantenimientos = () => {
   const [modoEdicion, setModoEdicion] = useState(false);
   const [mantenimientoEnEdicionId, setMantenimientoEnEdicionId] = useState(0);
 
+  // Filtros
+  const [filters, setFilters] = useState({
+    unidad: "",
+    periodo: "current_month",
+    tipoTaller: "",
+    tipoMantenimiento: "",
+  });
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const cargarAmbulancias = async () => {
     try {
       const data = await getAmbulancias();
@@ -41,12 +57,27 @@ const Mantenimientos = () => {
 
   const cargarHistorial = async () => {
     try {
-      const data = await MantenimientosService.get();
+      const data = await MantenimientosService.get({
+        unidad: filters.unidad,
+        periodo: filters.periodo,
+        tipoTaller: filters.tipoTaller,
+        tipoMantenimiento: filters.tipoMantenimiento,
+      });
       setHistorial(data);
     } catch (error) {
       console.error("Error al cargar el historial de mantenimientos:", error);
       alert("No se pudo cargar el historial de mantenimientos.");
     }
+  };
+
+  const clearfilter = async () => {
+    setFilters({
+      unidad: "",
+      tipoTaller: "",
+      tipoMantenimiento: "",
+      periodo: "current_month",
+    });
+    cargarHistorial();
   };
 
   const cargarGastos = async (id) => {
@@ -360,25 +391,32 @@ const Mantenimientos = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Unidad
                 </label>
-                <select className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-500">
+                <select
+                  name="unidad"
+                  value={filters.unidad}
+                  onChange={handleFilterChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-500"
+                >
                   <option value="">Todas las unidades</option>
-                  {[...new Set(historial.map((item) => item.unidad))].map(
-                    (unidad) => (
-                      <option key={unidad} value={unidad}>
-                        {unidad}
-                      </option>
-                    )
-                  )}
+                  {ambulancias.map((amb) => (
+                    <option key={amb.id} value={amb.id}>
+                      {amb.unidad}
+                    </option>
+                  ))}
                 </select>
               </div>
 
               {/* Filter by Fecha */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Rango de Fechas
+                  Período
                 </label>
-                <select className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-500">
-                  <option value="">Todo el historial</option>
+                <select
+                  name="periodo"
+                  value={filters.periodo}
+                  onChange={handleFilterChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-500"
+                >
                   <option value="current_month">Mes actual</option>
                   <option value="last_3_months">Últimos 3 meses</option>
                   <option value="last_year">Último año</option>
@@ -390,15 +428,15 @@ const Mantenimientos = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Tipo de Taller
                 </label>
-                <select className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-500">
+                <select
+                  name="tipoTaller"
+                  value={filters.tipoTaller}
+                  onChange={handleFilterChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-500"
+                >
                   <option value="">Todos los tipos</option>
-                  {[...new Set(historial.map((item) => item.tipo_taller))].map(
-                    (tipo) => (
-                      <option key={tipo} value={tipo}>
-                        {tipo}
-                      </option>
-                    )
-                  )}
+                  <option value="interno">Interno</option>
+                  <option value="externo">Externo</option>
                 </select>
               </div>
 
@@ -407,24 +445,31 @@ const Mantenimientos = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Tipo de Mantenimiento
                 </label>
-                <select className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-500">
+                <select
+                  name="tipoMantenimiento"
+                  value={filters.tipoMantenimiento}
+                  onChange={handleFilterChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-500"
+                >
                   <option value="">Todos los tipos</option>
-                  {[
-                    ...new Set(
-                      historial.map((item) => item.tipo_mantenimiento)
-                    ),
-                  ].map((tipo) => (
-                    <option key={tipo} value={tipo}>
-                      {tipo}
-                    </option>
-                  ))}
+                  <option value="preventivo">Preventivo</option>
+                  <option value="correctivo">Correctivo</option>
                 </select>
               </div>
             </div>
 
             <div className="mt-4 flex justify-end">
-              <button className="bg-red-700 text-white px-4 py-2 rounded-md hover:bg-red-800 transition">
+              <button
+                className="bg-red-700 text-white px-4 py-2 rounded-md hover:bg-red-800 transition"
+                onClick={cargarHistorial}
+              >
                 Aplicar Filtros
+              </button>
+              <button
+                onClick={clearfilter}
+                className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300"
+              >
+                Limpiar filtros
               </button>
             </div>
           </div>

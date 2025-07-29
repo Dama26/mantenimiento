@@ -6,9 +6,6 @@ import { Outlet } from 'react-router-dom';
 const MainLayout = ({ children }) => {
   const { user } = useAuth();
 
-  console.log("MainLayout user:", user);
-   console.log(children);
-
   return (
     <div className="flex">
       {user && <Sidebar />}

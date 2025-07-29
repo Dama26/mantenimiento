@@ -1,7 +1,19 @@
 import api from './api';
 
-export const get = async () => {
-  const response = await api.get('/mantenimientos');
+export const get = async (filters) => {
+  Object.keys(filters).forEach(key => {
+      if (filters[key] == null || filters[key] === '') {
+        delete filters[key];
+      }
+    });
+
+
+  const response = await api.get('/mantenimientos', {
+    params: filters,
+    paramsSerializer:{
+      indexes: null,
+    }
+  });
   if (response.status !== 200) throw new Error("Error al cargar mantenimientos");
   return response.data;
 };

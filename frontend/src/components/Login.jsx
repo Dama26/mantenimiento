@@ -79,14 +79,11 @@ const Login = () => {
             >
               Iniciar Sesión
             </button>
-            <div className="text-sm text-center mt-2">
-              <a href="/register" className="text-black-700 hover:underline mr-3">
-                Crear cuenta
-              </a>
+            {/* <div className="text-sm text-center mt-2">
               <a href="/recuperar" className="text-black-700 hover:underline">
                 ¿Olvidaste tu Contraseña?
               </a>
-            </div>
+            </div> */}
           </form>
         </div>
       </div>

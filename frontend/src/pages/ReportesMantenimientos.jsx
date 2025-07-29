@@ -20,8 +20,6 @@ const ReportesMantenimientos = () => {
     unidad: "",
     razonSocial: "",
     periodo: "",
-    // fechaInicio: null,
-    // fechaFin: null,
   });
 
   // Cargar ambulancias
@@ -249,14 +247,6 @@ const ReportesMantenimientos = () => {
     }));
   };
 
-  const handleDateChange = (date, field) => {
-    setFilters((prev) => ({
-      ...prev,
-      [field]: date,
-      periodo: "", // Reset periodo si se seleccionan fechas manuales
-    }));
-  };
-
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold text-red-700 mb-6">
@@ -358,8 +348,6 @@ const ReportesMantenimientos = () => {
                 unidad: "",
                 razonSocial: "",
                 periodo: "",
-                fechaInicio: null,
-                fechaFin: null,
               });
               setReportData([]);
             }}

@@ -2,14 +2,20 @@ const db = require('../config/db');
 const Ambulancia = require('./ambulancia.model');
 const Taller = require('./taller.model');
 
-const getAllMantenimientos = async () => {
-  const [rows] = await db.query(`
+const getAllMantenimientos = async (whereClauses, params) => {
+  let query =`
     select m.id, a.unidad, m.ambulancia_id, m.descripcion, DATE_FORMAT(m.fecha, '%m/%d/%Y') as fecha, m.tipo_mantenimiento, m.tipo_servicio, m.kilometraje, m.factura, m.tipo_taller, m.taller, m.razon_social_taller, SUM((costo_unitario * cantidad)) total 
     from mantenimientos m 
     inner join gastos g on m.id = g.mantenimiento_id
     inner join ambulancias a on m.ambulancia_id=a.id
-    group by m.id;
-  `);
+  `;
+
+  if (whereClauses.length > 0) {
+    query += 'WHERE ' + whereClauses.join(' AND ');
+  }
+    query += ' GROUP BY m.id ORDER BY m.fecha DESC';
+
+  const [rows] = await db.query(query, params || []);
   return rows;
 };
 

@@ -1,8 +1,56 @@
 const Mantenimiento = require("../models/mantenimiento.model");
 const Gasto = require("../models/gasto.model");
 
+
 const getAll = async (req, res) => {
-  const data = await Mantenimiento.getAllMantenimientos();
+  const whereClauses = [];
+  const params = [];
+  const { unidad, periodo, tipoTaller, tipoMantenimiento } = req.query;
+  
+    if (unidad) {
+      whereClauses.push('m.ambulancia_id = ?');
+      params.push(unidad);
+    }
+
+    if(periodo){
+      const now = new Date();
+      let fechaInicio;
+
+      switch(periodo) {
+        case 'current_month':
+          fechaInicio = new Date(now.getFullYear(), now.getMonth(), 1);
+          break;
+        case 'bimestre':
+          fechaInicio = new Date(now);
+          fechaInicio.setMonth(now.getMonth() - 2);
+          break;
+        case 'semestre':
+          fechaInicio = new Date(now);
+          fechaInicio.setMonth(now.getMonth() - 6);
+          break;
+        case 'anio':
+          fechaInicio = new Date(now);
+          fechaInicio.setFullYear(now.getFullYear() - 1);
+          break;
+        default:
+          return res.status(400).json({ error: "Período no válido" });
+      }
+
+      whereClauses.push('m.fecha >= ?');
+      params.push(fechaInicio.toISOString().slice(0, 10));
+    }
+
+    if (tipoTaller) {
+      whereClauses.push('m.tipo_taller = ?');
+      params.push(tipoTaller);
+    }
+
+    if (tipoMantenimiento) {
+      whereClauses.push('m.tipo_mantenimiento = ?');
+      params.push(tipoMantenimiento);
+    }
+
+  const data = await Mantenimiento.getAllMantenimientos(whereClauses, params);
   res.json(data);
 };
 
