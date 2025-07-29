@@ -28,15 +28,21 @@ const create = async (req, res) => {
   const { gastos } = req.body;
 
   const id = await Mantenimiento.createMantenimiento(req.body);
+  
+  let sumaTotal = 0;
 
   if (gastos && Array.isArray(gastos)) {
     for (const gasto of gastos) {
       gasto.mantenimiento_id = id;
       const gastoId = await Gasto.createGasto(gasto);
+      const gastoTotal = gasto.costo_unitario * gasto.cantidad;
+      sumaTotal += gastoTotal;
       gasto.id = gastoId;
     }
     req.body.gastos = gastos;
   }
+
+  req.body.total = sumaTotal;
 
   res.status(201).json({ id, ...req.body });
 };

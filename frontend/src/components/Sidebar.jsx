@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Logo from "../assets/logo.png";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, NavLink } from "react-router-dom";
 import {
   FaAmbulance,
   FaMoneyBillWave,
@@ -14,12 +14,17 @@ import {
   TbLayoutSidebarLeftCollapse,
   TbLayoutSidebarLeftExpand,
 } from "react-icons/tb";
+import { useAuth } from '../context/AuthContext';
+
 
 const Sidebar = () => {
+
   const [open, setOpen] = useState(true);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  
+      const { logout } = useAuth();
 
   const Menus = [
     { title: "Ambulancias", path: "/", icon: <FaAmbulance /> },
@@ -30,6 +35,7 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     setShowLogoutModal(false);
+    logout();
     navigate("/login");
   };
 

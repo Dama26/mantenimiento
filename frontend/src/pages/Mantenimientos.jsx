@@ -1,19 +1,19 @@
 import { useState, useEffect } from "react";
 import { getAmbulancias } from "../services/ambulanciasService";
-import * as MantenimientosService  from "../services/mantenimientoService";
+import * as MantenimientosService from "../services/mantenimientoService";
 import EditableSpendsGrid from "../components/EditableGrid";
-import DatePicker from 'react-datepicker';
-import { registerLocale, setDefaultLocale } from 'react-datepicker';
-import es from 'date-fns/locale/es';
-import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from "react-datepicker";
+import { registerLocale, setDefaultLocale } from "react-datepicker";
+import es from "date-fns/locale/es";
+import "react-datepicker/dist/react-datepicker.css";
 
-registerLocale('es', es);
-
+registerLocale("es", es);
 
 const Mantenimientos = () => {
   const [tipoMantenimiento, setTipoMantenimiento] = useState("preventivo");
   const [tipoTaller, setTipoTaller] = useState("interno");
   const [taller, setTaller] = useState("");
+  const [razonSocialTaller, setRazonSocialTaller] = useState("");
   const [tipoServicio, setTipoServicio] = useState("menor");
   const [kilometraje, setKilometraje] = useState(0);
   const [descripcion, setDescripcion] = useState("");
@@ -28,7 +28,6 @@ const Mantenimientos = () => {
   const [showForm, setShowForm] = useState(false);
   const [modoEdicion, setModoEdicion] = useState(false);
   const [mantenimientoEnEdicionId, setMantenimientoEnEdicionId] = useState(0);
-
 
   const cargarAmbulancias = async () => {
     try {
@@ -53,7 +52,7 @@ const Mantenimientos = () => {
   const cargarGastos = async (id) => {
     try {
       const data = await MantenimientosService.getGastosByMantenimientoId(id);
-      setGastos(data)
+      setGastos(data);
     } catch (error) {
       console.error("Error al cargar los gastos del mantenimiento:", error);
       alert("No se pudieron cargar los gastos del mantenimiento.");
@@ -68,18 +67,26 @@ const Mantenimientos = () => {
   const handleAgregar = async (e) => {
     e.preventDefault();
 
-    // if (
-    //   !descripcion ||
-    //   !fecha ||
-    //   !unidad ||
-    //   !taller ||
-    //   !costo ||
-    //   !factura
-    // )
-    //   return;
+    if (
+      !ambulanciaSeleccionadaId ||
+      !tipoMantenimiento ||
+      !tipoTaller ||
+      !taller ||
+      !razonSocialTaller ||
+      !tipoServicio ||
+      kilometraje <= 0 ||
+      !descripcion ||
+      !fecha ||
+      !factura ||
+      !gastos ||
+      gastos.length === 0
+    ) {
+      alert("Por favor, completa todos los campos.");
+      return;
+    }
 
     const mantenimientoObject = {
-      id: modoEdicion ? mantenimientoEnEdicionId :  Date.now(),
+      id: modoEdicion ? mantenimientoEnEdicionId : Date.now(),
       ambulancia_id: ambulanciaSeleccionadaId,
       tipo_mantenimiento: tipoMantenimiento,
       tipo_servicio: tipoServicio,
@@ -89,24 +96,26 @@ const Mantenimientos = () => {
       factura,
       tipo_taller: tipoTaller,
       taller,
-      gastos
+      razon_social_taller: razonSocialTaller,
+      gastos,
     };
 
     console.log(mantenimientoObject);
 
     try {
-      if(modoEdicion) {
+      if (modoEdicion) {
         console.log("Actualizando mantenimiento:", mantenimientoEnEdicionId);
-        await MantenimientosService.update(mantenimientoEnEdicionId, mantenimientoObject);
-        await cargarHistorial();
-
+        await MantenimientosService.update(
+          mantenimientoEnEdicionId,
+          mantenimientoObject
+        );
         console.log("Mantenimiento actualizado:", mantenimientoObject);
-      }
-      else {
-        const data = await MantenimientosService.create(mantenimientoObject);  
-        setHistorial((prev) => [...prev, data]);
+      } else {
+        const data = await MantenimientosService.create(mantenimientoObject);
         console.log("Mantenimiento creado:", mantenimientoObject);
       }
+
+      await cargarHistorial();
 
       resetForm();
       setShowForm(false);
@@ -116,32 +125,25 @@ const Mantenimientos = () => {
         alert("No se pudo actualizar el mantenimiento.");
       } else {
         console.error("Error al crear mantenimiento:", error);
-        alert("No se pudo crear el mantenimiento.");  
+        alert("No se pudo crear el mantenimiento.");
       }
-    }
-
-  };
-
-  const handleEliminar = (id) => {
-    if (window.confirm("¿Deseas eliminar este mantenimiento?")) {
-      setHistorial(historial.filter((item) => item.id !== id));
     }
   };
 
   const handleChange = (e) => {
     setAmbulanciaSeleccionadaId(e.target.value);
-    console.log("Selected Ambulance ID:", e.target.value);
   };
 
   const handleEditar = async (mantenimiento) => {
     cargarGastos(mantenimiento.id);
     setTipoMantenimiento(mantenimiento.tipo_mantenimiento);
     setTipoTaller(mantenimiento.tipo_taller);
-    setTaller(mantenimiento.taller);  
+    setTaller(mantenimiento.taller);
+    setRazonSocialTaller(mantenimiento.razon_social_taller);
     setTipoServicio(mantenimiento.tipo_servicio);
     setKilometraje(mantenimiento.kilometraje);
     setDescripcion(mantenimiento.descripcion);
-    setFecha(mantenimiento.fecha);  
+    setFecha(mantenimiento.fecha);
     setFactura(mantenimiento.factura);
     setAmbulanciaSeleccionadaId(mantenimiento.ambulancia_id);
     setShowForm(true);
@@ -157,17 +159,19 @@ const Mantenimientos = () => {
     setAmbulanciaSeleccionadaId(0);
     setTipoMantenimiento("preventivo");
     setTipoTaller("interno");
+    setRazonSocialTaller("");
     setTipoServicio("interno");
     setKilometraje(0);
     setFactura("");
     setTaller("");
     setShowForm(false);
-    setModoEdicion(false)
+    setModoEdicion(false);
+    setGastos([]);
   };
 
   function formatNumberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
 
   return (
     <div className="p-6 space-y-12">
@@ -239,10 +243,24 @@ const Mantenimientos = () => {
               className="w-full border border-gray-300 p-2 rounded"
             />
           </div>
-          
 
           <div>
-            <label className="block text-sm font-medium">Tipo de servicio</label>
+            <label className="block text-sm font-medium">
+              Razón Social del taller
+            </label>
+            <input
+              type="text"
+              value={razonSocialTaller}
+              onChange={(e) => setRazonSocialTaller(e.target.value)}
+              placeholder=""
+              className="w-full border border-gray-300 p-2 rounded"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">
+              Tipo de servicio
+            </label>
             <select
               value={tipoServicio}
               onChange={(e) => setTipoServicio(e.target.value)}
@@ -250,14 +268,11 @@ const Mantenimientos = () => {
             >
               <option value="mayor">Mayor</option>
               <option value="menor">Menor</option>
-            
             </select>
           </div>
 
           <div>
-            <label className="block text-sm font-medium">
-              Kilometraje
-            </label>
+            <label className="block text-sm font-medium">Kilometraje</label>
             <input
               type="text"
               value={kilometraje}
@@ -266,7 +281,6 @@ const Mantenimientos = () => {
               className="w-full border border-gray-300 p-2 rounded"
             />
           </div>
-
 
           <div className="md:col-span-2">
             <label className="block text-sm font-medium">Descripción</label>
@@ -277,7 +291,7 @@ const Mantenimientos = () => {
               className="w-full border border-gray-300 p-2 rounded"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium">Fecha</label>
             <input
@@ -286,7 +300,7 @@ const Mantenimientos = () => {
               onChange={(e) => setFecha(e.target.value)}
               className="w-full border border-gray-300 p-2 rounded"
             />
-            
+
             {/* <DatePicker
           selected={fecha}
           onChange={(date) => setFecha(date)}
@@ -296,7 +310,6 @@ const Mantenimientos = () => {
               className="w-full border border-gray-300 p-2 rounded"
 
         /> */}
-
           </div>
 
           <div>
@@ -310,19 +323,17 @@ const Mantenimientos = () => {
             />
           </div>
 
-
           <div className="md:col-span-2">
             <hr className="border-gray-300" />
           </div>
 
           <div className="md:col-span-2">
-            <EditableSpendsGrid rows={gastos} setRows={setGastos}/>
+            <EditableSpendsGrid rows={gastos} setRows={setGastos} />
           </div>
 
           <div className="md:col-span-2 text-right">
-
             <button className="bg-red-700 text-white px-6 py-2 rounded hover:bg-red-800 mr-2">
-              { modoEdicion ? "Actualizar": "Guardar"}
+              {modoEdicion ? "Actualizar" : "Guardar"}
             </button>
 
             <button
@@ -340,6 +351,84 @@ const Mantenimientos = () => {
 
       <div className="mt-8" style={{ display: showForm ? "none" : "block" }}>
         <div>
+          <div className="bg-white p-4 rounded-lg shadow mb-4">
+            <h2 className="text-lg font-semibold mb-3 text-red-700">Filtros</h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Filter by Unidad */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Unidad
+                </label>
+                <select className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-500">
+                  <option value="">Todas las unidades</option>
+                  {[...new Set(historial.map((item) => item.unidad))].map(
+                    (unidad) => (
+                      <option key={unidad} value={unidad}>
+                        {unidad}
+                      </option>
+                    )
+                  )}
+                </select>
+              </div>
+
+              {/* Filter by Fecha */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Rango de Fechas
+                </label>
+                <select className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-500">
+                  <option value="">Todo el historial</option>
+                  <option value="current_month">Mes actual</option>
+                  <option value="last_3_months">Últimos 3 meses</option>
+                  <option value="last_year">Último año</option>
+                </select>
+              </div>
+
+              {/* Filter by Tipo de Taller */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tipo de Taller
+                </label>
+                <select className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-500">
+                  <option value="">Todos los tipos</option>
+                  {[...new Set(historial.map((item) => item.tipo_taller))].map(
+                    (tipo) => (
+                      <option key={tipo} value={tipo}>
+                        {tipo}
+                      </option>
+                    )
+                  )}
+                </select>
+              </div>
+
+              {/* Filter by Tipo de Mantenimiento */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tipo de Mantenimiento
+                </label>
+                <select className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-500">
+                  <option value="">Todos los tipos</option>
+                  {[
+                    ...new Set(
+                      historial.map((item) => item.tipo_mantenimiento)
+                    ),
+                  ].map((tipo) => (
+                    <option key={tipo} value={tipo}>
+                      {tipo}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-4 flex justify-end">
+              <button className="bg-red-700 text-white px-4 py-2 rounded-md hover:bg-red-800 transition">
+                Aplicar Filtros
+              </button>
+            </div>
+          </div>
+
           <button
             className="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800 transition"
             onClick={() => setShowForm(true)}
@@ -362,6 +451,7 @@ const Mantenimientos = () => {
                   <th className="border px-3 py-2">Factura</th>
                   <th className="border px-3 py-2">Tipo de Taller</th>
                   <th className="border px-3 py-2">Nombre del taller</th>
+                  <th className="border px-3 py-2">Razón Social del Taller</th>
                   <th className="border px-3 py-2">Total</th>
                   <th className="border px-3 py-2">Acciones</th>
                 </tr>
@@ -371,17 +461,22 @@ const Mantenimientos = () => {
                   <tr key={m.id} className="hover:bg-gray-50">
                     <td className="border px-2 py-1">{m.unidad}</td>
                     <td className="border px-2 py-1">{m.fecha}</td>
-                    
+
                     <td className="border px-2 py-1 capitalize">
                       {m.tipo_mantenimiento}
                     </td>
                     <td className="border px-2 py-1 capitalize">
-                      { formatNumberWithCommas(m.kilometraje)}km
+                      {formatNumberWithCommas(m.kilometraje)}km
                     </td>
                     <td className="border px-2 py-1">{m.factura}</td>
                     <td className="border px-2 py-1">{m.tipo_taller}</td>
                     <td className="border px-2 py-1">{m.taller}</td>
-                    <td className="border px-2 py-1">${ formatNumberWithCommas(m.total)}</td>
+                    <td className="border px-2 py-1">
+                      {m.razon_social_taller}
+                    </td>
+                    <td className="border px-2 py-1">
+                      ${formatNumberWithCommas(m.total)}
+                    </td>
                     <td className="border px-2 py-1">
                       <button
                         onClick={() => handleEditar(m)}

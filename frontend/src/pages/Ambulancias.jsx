@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAmbulancias, deleteAmbulancia, createAmbulancia } from "../services/ambulanciasService"; // Importa el servicio
+import { getAmbulancias, deleteAmbulancia, createAmbulancia, updateAmbulancia } from "../services/ambulanciasService"; // Importa el servicio
 import { getToken } from '../services/token';
 
 const Ambulancias = () => {
@@ -68,14 +68,12 @@ const Ambulancias = () => {
     };
 
     if (modoEdicion) {
-      setAmbulancias((prev) =>
-        prev.map((amb) => (amb.id === ambulanciaEditandoId ? nuevaAmbulancia : amb))
-      );
+      const data = await updateAmbulancia(ambulanciaEditandoId, nuevaAmbulancia);
+      console.log("Ambulancia actualizada:", data);
     } else {
-
       const data = await createAmbulancia(nuevaAmbulancia);
-      setAmbulancias([...ambulancias, data]);
     }
+    await cargarAmbulancias();
 
     resetForm();
   };

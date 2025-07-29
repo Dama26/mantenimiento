@@ -3,32 +3,37 @@ import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import Cruz from "../assets/cruz.jpg";
 import Imagen from "../assets/imagen.jpg";
-import { useAuth } from '../hooks/useAuth';
+// import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../context/AuthContext';
+
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+    const { login, error } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const { login, loading, error } = useAuth();
     const loadingToast = toast.loading("Iniciando sesión...");
 
     
     const success = await login(email, password);
     if (success) {
-      navigate('/mantenimientos'); // Or your desired redirect path
+      toast.success("Inicio de sesión exitoso", { position: "top-right" });
+      navigate('/mantenimientos'); // O la ruta deseada después del login
+    } else {
+      toast.error("Error al iniciar sesión. Por favor, verifica tus credenciales.", { position: "top-right" });
     }
 
     toast.dismiss(loadingToast);
 
-    if (error) {
-      toast.error("Correo o contraseña incorrectos.", { position: "top-right" });
-    } else {
-      toast.success(`¡Bienvenido ${email.split("@")[0]}!`, { position: "top-right" });
-      navigate("/");
-    }
+    // if (error) {
+    //   toast.error("Correo o contraseña incorrectos.", { position: "top-right" });
+    // } else {
+    //   toast.success(`¡Bienvenido ${email.split("@")[0]}!`, { position: "top-right" });
+    //   navigate("/");
+    // }
   };
 
   return (

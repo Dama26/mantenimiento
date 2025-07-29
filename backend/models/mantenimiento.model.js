@@ -4,7 +4,7 @@ const Taller = require('./taller.model');
 
 const getAllMantenimientos = async () => {
   const [rows] = await db.query(`
-    select m.id, a.unidad, m.ambulancia_id, m.descripcion, DATE_FORMAT(m.fecha, '%m/%d/%Y') as fecha, m.tipo_mantenimiento, m.tipo_servicio, m.kilometraje, m.factura, m.tipo_taller, m.taller, SUM((costo_unitario * cantidad)) total 
+    select m.id, a.unidad, m.ambulancia_id, m.descripcion, DATE_FORMAT(m.fecha, '%m/%d/%Y') as fecha, m.tipo_mantenimiento, m.tipo_servicio, m.kilometraje, m.factura, m.tipo_taller, m.taller, m.razon_social_taller, SUM((costo_unitario * cantidad)) total 
     from mantenimientos m 
     inner join gastos g on m.id = g.mantenimiento_id
     inner join ambulancias a on m.ambulancia_id=a.id
@@ -38,7 +38,9 @@ const createMantenimiento = async (data) => {
     kilometraje,
     factura,
     taller,
-    tipo_taller
+    razon_social_taller,
+    tipo_taller,
+    
   } = data;
 
   const [result] = await db.query(
@@ -50,9 +52,10 @@ const createMantenimiento = async (data) => {
       descripcion,
       kilometraje,
       factura,
-      taller, 
+      taller,
+      razon_social_taller, 
       tipo_taller
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
     [
       ambulancia_id,
       tipo_mantenimiento,
@@ -62,6 +65,7 @@ const createMantenimiento = async (data) => {
       kilometraje,
       factura,
       taller,
+      razon_social_taller,
       tipo_taller,
     ]
   );
@@ -78,13 +82,14 @@ const updateMantenimiento = async (id, data) => {
     kilometraje,
     factura,
     taller,
+    razon_social_taller,
     tipo_taller,
   } = data;
 
   await db.query(
     `UPDATE mantenimientos SET
       ambulancia_id = ?, tipo_mantenimiento = ?, tipo_servicio = ?, fecha = ?,
-      descripcion = ?, kilometraje = ?, factura = ?, taller= ?, tipo_taller = ?
+      descripcion = ?, kilometraje = ?, factura = ?, taller= ?, razon_social_taller = ?, tipo_taller = ?
      WHERE id = ?`,
     [
       ambulancia_id,
@@ -95,6 +100,7 @@ const updateMantenimiento = async (id, data) => {
       kilometraje,
       factura,
       taller,
+      razon_social_taller,
       tipo_taller,
       id,
     ]

@@ -38,14 +38,15 @@ const Usuarios = () => {
     e.preventDefault();
 
     try {
+      
       if (modoEdicion) {
         await UsuariosService.update(usuarioEnEdicionId, usuarioObject);
       } else {
-        const result = await UsuariosService.create(usuarioObject);
-        if (result) {
-          cargarUsuarios();
-        }
+        await UsuariosService.create(usuarioObject);
       }
+
+      cargarUsuarios();
+
       setShowForm(false);
       resetForm();
     } catch (error) {

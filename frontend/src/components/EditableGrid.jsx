@@ -30,7 +30,9 @@ const EditableSpendsGrid = ({ rows, setRows }) => {
     setRows((prev) => prev.filter((row) => row.id !== id));
   };
 
-  const calculateSubtotal = (row) => row.cantidad * row.costo_unitario;
+  const calculateSubtotal = (row) => row.cantidad * row.costo_unitario + (row.cantidad * row.costo_unitario * 0.16);
+
+  const calculateIVA = (row) => row.cantidad * row.costo_unitario * 0.16;
 
   const calculateTotal = () =>
     rows.reduce((sum, row) => sum + calculateSubtotal(row), 0);
@@ -65,6 +67,7 @@ const EditableSpendsGrid = ({ rows, setRows }) => {
             <th className="p-2 border text-sm font-medium">Nombre</th>
             <th className="p-2 border text-sm font-medium">Cantidad</th>
             <th className="p-2 border text-sm font-medium">Costo Unitario</th>
+            <th className="p-2 border text-sm font-medium">IVA</th>
             <th className="p-2 border text-sm font-medium">Subtotal</th>
             {isEditing && <th className="p-2 border">Acción</th>}
           </tr>
@@ -104,7 +107,7 @@ const EditableSpendsGrid = ({ rows, setRows }) => {
                 {isEditing ? (
                   <input
                     type="number"
-                    step="0.01"
+                    step="1"
                     value={row.costo_unitario}
                     onChange={(e) =>
                       handleInputChange(
@@ -118,6 +121,9 @@ const EditableSpendsGrid = ({ rows, setRows }) => {
                 ) : (
                   `$${row.costo_unitario.toFixed(2)}`
                 )}
+              </td>
+              <td>
+                ${calculateIVA(row).toFixed(2)}
               </td>
               <td className="p-2 border">
                 ${calculateSubtotal(row).toFixed(2)}
@@ -137,7 +143,7 @@ const EditableSpendsGrid = ({ rows, setRows }) => {
         </tbody>
         <tfoot>
           <tr className="font-semibold bg-gray-50">
-            <td className="p-2 border text-sm font-medium" colSpan={3}>
+            <td className="p-2 border text-sm font-medium" colSpan={4}>
               Total
             </td>
             <td
